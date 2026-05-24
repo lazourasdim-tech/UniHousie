@@ -24,6 +24,7 @@ public class VerificationPage extends JFrame {
     private final JButton sendEmailBtn     = new JButton("Αποστολή Email");
     private final JButton verifyTokenBtn   = new JButton("Επαλήθευση Token");
     private final JLabel  emailStatusLabel = new JLabel(" ");
+    private final JTabbedPane tabs = new JTabbedPane();
 
     public VerificationPage(Student student) {
         super("UC01 — Επαλήθευση Φοιτητικής Ταυτότητας");
@@ -34,8 +35,8 @@ public class VerificationPage extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(8, 8));
 
-        add(buildHeader(),                              BorderLayout.NORTH);
-        add(buildFlowsTabs(),                           BorderLayout.CENTER);
+        add(buildHeader(),    BorderLayout.NORTH);
+        add(buildFlowsTabs(), BorderLayout.CENTER);
         add(new JLabel("UniHousie — UC01 demo", SwingConstants.CENTER), BorderLayout.SOUTH);
 
         wireGovFlow();
@@ -44,6 +45,61 @@ public class VerificationPage extends JFrame {
     }
 
     public void display() { setVisible(true); }
+
+    public void enterProtocolNumber(String protocolNum) {
+        protocolField.setText(protocolNum);
+        try {
+            controller.verifyProtocol(protocolNum);
+            promptForOTP();
+        } catch (IllegalArgumentException ex) {
+            setStatus(otpStatusLabel, ex.getMessage(), true);
+        }
+    }
+
+    public void enterOTP(String inputOTP) {
+        otpField.setText(inputOTP);
+        boolean ok = controller.validateOTP(inputOTP);
+        if (ok) showVerificationSuccess();
+        else    showOTPError();
+        refreshStatusLabel();
+    }
+
+    public void selectEmailVerification() {
+        tabs.setSelectedIndex(1);
+    }
+
+    public void clickVerificationLink(String token) {
+        tokenField.setText(token);
+        boolean ok = controller.verifyToken(token);
+        if (ok) showVerificationSuccess();
+        else    showInvalidTokenError();
+        refreshStatusLabel();
+    }
+
+    public void promptForOTP() {
+        setStatus(otpStatusLabel, "OTP εστάλη με SMS. Δείτε το popup και εισάγετέ τον.", false);
+        otpField.requestFocus();
+    }
+
+    public void showVerificationSuccess() {
+        JOptionPane.showMessageDialog(this, "✓ Επιτυχής επαλήθευση!",
+                "Verification", JOptionPane.INFORMATION_MESSAGE);
+        setStatus(otpStatusLabel,   "Επιτυχής επαλήθευση. Ο λογαριασμός είναι πλέον VERIFIED.", false);
+        setStatus(emailStatusLabel, "Επιτυχής επαλήθευση. Ο λογαριασμός είναι πλέον VERIFIED.", false);
+    }
+
+    public void showOTPError() {
+        setStatus(otpStatusLabel, "Αποτυχία: λάθος OTP ή λήξη.", true);
+    }
+
+    public void showCheckEmailMessage() {
+        setStatus(emailStatusLabel, "Email εστάλη. Δείτε το popup για τον κωδικό.", false);
+        tokenField.requestFocus();
+    }
+
+    public void showInvalidTokenError() {
+        setStatus(emailStatusLabel, "Αποτυχία: λάθος ή ληγμένος κωδικός.", true);
+    }
 
     private JComponent buildHeader() {
         JPanel header = new JPanel(new GridLayout(0, 1, 2, 2));
@@ -68,7 +124,6 @@ public class VerificationPage extends JFrame {
     }
 
     private JComponent buildFlowsTabs() {
-        JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Βασική Ροή — gov.gr OTP",        buildGovFlowPanel());
         tabs.addTab("Εναλλακτική — Ακαδημαϊκό Email", buildEmailFlowPanel());
         return tabs;
@@ -110,47 +165,20 @@ public class VerificationPage extends JFrame {
     }
 
     private void wireGovFlow() {
-        sendOtpBtn.addActionListener(e -> {
-            try {
-                controller.verifyProtocol(protocolField.getText().trim());
-                setStatus(otpStatusLabel, "OTP εστάλη με SMS. Δείτε το popup.", false);
-            } catch (IllegalArgumentException ex) {
-                setStatus(otpStatusLabel, ex.getMessage(), true);
-            }
-        });
-        verifyOtpBtn.addActionListener(e -> {
-            boolean ok = controller.validateOTP(otpField.getText().trim());
-            if (ok) {
-                setStatus(otpStatusLabel, "Επιτυχής επαλήθευση. Ο λογαριασμός είναι πλέον VERIFIED.", false);
-                JOptionPane.showMessageDialog(this, "✓ Επιτυχής επαλήθευση!",
-                        "Verification", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                setStatus(otpStatusLabel, "Αποτυχία: λάθος OTP ή λήξη.", true);
-            }
-            refreshStatusLabel();
-        });
+        sendOtpBtn.addActionListener(e -> enterProtocolNumber(protocolField.getText().trim()));
+        verifyOtpBtn.addActionListener(e -> enterOTP(otpField.getText().trim()));
     }
 
     private void wireEmailFlow() {
         sendEmailBtn.addActionListener(e -> {
             try {
                 controller.sendEmailLink(emailField.getText().trim());
-                setStatus(emailStatusLabel, "Email εστάλη. Δείτε το popup για τον κωδικό.", false);
+                showCheckEmailMessage();
             } catch (IllegalArgumentException ex) {
                 setStatus(emailStatusLabel, ex.getMessage(), true);
             }
         });
-        verifyTokenBtn.addActionListener(e -> {
-            boolean ok = controller.verifyToken(tokenField.getText().trim());
-            if (ok) {
-                setStatus(emailStatusLabel, "Επιτυχής επαλήθευση. Ο λογαριασμός είναι πλέον VERIFIED.", false);
-                JOptionPane.showMessageDialog(this, "✓ Επιτυχής επαλήθευση!",
-                        "Verification", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                setStatus(emailStatusLabel, "Αποτυχία: λάθος ή ληγμένος κωδικός.", true);
-            }
-            refreshStatusLabel();
-        });
+        verifyTokenBtn.addActionListener(e -> clickVerificationLink(tokenField.getText().trim()));
     }
 
     private JLabel label(String text) {
