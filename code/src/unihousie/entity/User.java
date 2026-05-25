@@ -1,5 +1,7 @@
 package unihousie.entity;
 
+import unihousie.mock.DataStore;
+
 public abstract class User {
 
     public static final String STATUS_ACTIVE = "ACTIVE";
@@ -38,4 +40,36 @@ public abstract class User {
     public void setVerificationStatus(String status) {  }
 
     public void save() {  }
+
+    public static User findByUserId(String userId) {
+        return DataStore.findUser(userId);
+    }
+
+    public static UserSummary getUserSummaryDetails(String targetUserId) {
+        User u = DataStore.findUser(targetUserId);
+        if (!(u instanceof Student)) {
+            throw new IllegalArgumentException("Δεν είναι φοιτητής: " + targetUserId);
+        }
+        Student s = (Student) u;
+        LifestyleProfile p = s.getLifestyleProfile();
+        String habits = (p == null) ? "" : p.getHabits();
+        double budget = (p == null) ? 0.0 : p.getBudget();
+        return new UserSummary(
+                s.getUserId(),
+                s.getFullName(),
+                s.getDepartment(),
+                habits,
+                budget,
+                maskEmail(s.getEmail())
+        );
+    }
+
+    private static String maskEmail(String email) {
+        if (email == null || !email.contains("@")) return "***@***";
+        int at = email.indexOf('@');
+        String local = email.substring(0, at);
+        String domain = email.substring(at);
+        if (local.length() <= 3) return local.charAt(0) + "***" + domain;
+        return local.substring(0, 3) + "***" + domain;
+    }
 }

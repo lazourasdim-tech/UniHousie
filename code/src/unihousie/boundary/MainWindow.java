@@ -50,8 +50,20 @@ public class MainWindow extends JFrame {
             hookRefresh.accept(p);
             p.display();
         }));
-        actions.add(actionButton("UC02 — Lifestyle profile",     e -> open(new LifestyleProfilePage())));
-        actions.add(actionButton("UC03 — Browse roommates",      e -> open(new BrowseRoommatesPage())));
+        actions.add(actionButton("UC02 — Lifestyle profile", e -> {
+            Student s = list.getSelectedValue();
+            if (s == null) { warn("Επίλεξε φοιτητή."); return; }
+            LifestyleProfilePage p = new LifestyleProfilePage(s);
+            hookRefresh.accept(p);
+            p.display();
+        }));
+        actions.add(actionButton("UC03 — Browse roommates", e -> {
+            Student s = list.getSelectedValue();
+            if (s == null) { warn("Επίλεξε φοιτητή."); return; }
+            BrowseRoommatesPage p = new BrowseRoommatesPage(s);
+            hookRefresh.accept(p);
+            p.display();
+        }));
         actions.add(actionButton("UC04 — Roommate card / Like",  e -> open(new RoommateCard())));
         actions.add(actionButton("UC05 — Chat window",           e -> open(new ChatWindow())));
         actions.add(actionButton("UC07 — Search property",       e -> open(new SearchPropertyPage())));
