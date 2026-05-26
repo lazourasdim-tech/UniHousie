@@ -94,7 +94,6 @@ public class MainWindow extends JFrame {
         }));
         actions.add(actionButton("UC10 — Schedule visit",        e -> open(new ScheduleVisitPage())));
         actions.add(actionButton("UC11 — Submit review",         e -> open(new ReviewPage())));
-        actions.add(actionButton("UC09 — Report a user",         e -> open(new ReportUserForm())));
 
         return splitPane(list, actions);
     }

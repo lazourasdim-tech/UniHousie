@@ -131,6 +131,11 @@ public class DataStore {
         return null;
     }
 
+    public static Report findReport(String id) {
+        for (Report r : reports) if (r.getReportId().equals(id)) return r;
+        return null;
+    }
+
     public static String nextId(String prefix, int currentSize) {
         return prefix + (currentSize + 1) + "_" + System.currentTimeMillis();
     }
@@ -150,6 +155,14 @@ public class DataStore {
             }
             messages.removeIf(x -> x.getId().equals(msg.getId()));
             messages.add(msg);
+        } else if (obj instanceof Report) {
+            Report r = (Report) obj;
+            reports.removeIf(x -> x.getReportId().equals(r.getReportId()));
+            reports.add(r);
+        } else if (obj instanceof PropertyVisit) {
+            PropertyVisit v = (PropertyVisit) obj;
+            visits.removeIf(x -> x.getVisitId().equals(v.getVisitId()));
+            visits.add(v);
         }
     }
 

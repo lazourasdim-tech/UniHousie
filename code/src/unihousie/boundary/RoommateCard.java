@@ -130,12 +130,16 @@ public class RoommateCard extends JFrame {
         cardPanel.add(bioLabel, BorderLayout.CENTER);
         add(cardPanel, BorderLayout.CENTER);
 
-        JPanel buttons = new JPanel(new GridLayout(1, 2, 25, 0));
+        JPanel buttons = new JPanel(new GridLayout(1, 3, 15, 0));
         buttons.setBorder(BorderFactory.createEmptyBorder(10, 40, 25, 40));
 
         JButton skipBtn = new JButton("⏭ Skip");
         skipBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         skipBtn.addActionListener(e -> nextProfile());
+
+        JButton reportBtn = new JButton("🚩");
+        reportBtn.setToolTipText("Καταγγελία χρήστη");
+        reportBtn.addActionListener(e -> handleReport());
 
         JButton likeBtn = new JButton("❤️ Like");
         likeBtn.setFont(new Font("Arial", Font.BOLD, 16));
@@ -148,6 +152,7 @@ public class RoommateCard extends JFrame {
         }
 
         buttons.add(skipBtn);
+        buttons.add(reportBtn);
         buttons.add(likeBtn);
         add(buttons, BorderLayout.SOUTH);
     }
@@ -195,5 +200,12 @@ public class RoommateCard extends JFrame {
     private void nextProfile() {
         currentIndex++;
         SwingUtilities.invokeLater(this::showCurrentProfile);
+    }
+
+    private void handleReport() {
+        if (currentIndex >= profiles.size()) return;
+        UserSummary target = profiles.get(currentIndex);
+        new ReportUserForm(currentUserId, target.getUserId(),
+                unihousie.entity.Report.TARGET_STUDENT).setVisible(true);
     }
 }

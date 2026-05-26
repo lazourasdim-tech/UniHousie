@@ -40,8 +40,18 @@ public class PropertyDetailsPage extends JFrame {
         interestBtn.setFont(new Font("Arial", Font.BOLD, 16));
         interestBtn.addActionListener(e -> clickExpressInterest());
 
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton reportBtn = new JButton("🚩 Καταγγελία Αγγελίας");
+        reportBtn.addActionListener(e -> {
+            new ReportUserForm(
+                    unihousie.Session.getCurrentUserId(),
+                    listing.getListingId(),
+                    unihousie.entity.Report.TARGET_LISTING
+            ).setVisible(true);
+        });
+
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottom.add(interestBtn);
+        bottom.add(reportBtn);
 
         add(new JScrollPane(detailsArea), BorderLayout.CENTER);
         add(bottom, BorderLayout.SOUTH);
