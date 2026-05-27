@@ -1,5 +1,6 @@
 package unihousie.boundary;
 
+import unihousie.Session;
 import unihousie.controller.InterestController;
 import unihousie.entity.ContactInfo;
 import unihousie.entity.HousingListing;
@@ -16,7 +17,7 @@ public class PropertyDetailsPage extends JFrame {
         this.listing = listing;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(780, 620);
+        setSize(820, 660);
         setLocationRelativeTo(null);
         buildUI();
     }
@@ -32,16 +33,41 @@ public class PropertyDetailsPage extends JFrame {
                         "Διεύθυνση: " + listing.getAddress() + "\n" +
                         "Τύπος: " + listing.getType() + " • " + listing.getRooms() + " δωμάτια\n" +
                         "Εμβαδόν: " + listing.getSqm() + " τ.μ.\n" +
-                        "Ενοίκιο: " + listing.getRent() + " €/μήνα\n\n" +
+                        "Ενοίκιο: " + listing.getRent() + " €/μήνα\n" +
+                        "Μέσος όρος βαθμολογίας: " + String.format("%.2f", listing.getAverageRating()) + " / 5\n\n" +
                         "Περιγραφή:\n" + listing.getDescription()
         );
 
         JButton interestBtn = new JButton("Εκδήλωση Ενδιαφέροντος");
-        interestBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        interestBtn.setFont(new Font("Arial", Font.BOLD, 14));
         interestBtn.addActionListener(e -> clickExpressInterest());
 
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton scheduleBtn = new JButton("📅 Προγραμματισμός Επίσκεψης");
+        scheduleBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        scheduleBtn.addActionListener(e -> {
+            new ScheduleVisitPage(listing, Session.getCurrentUserId()).setVisible(true);
+        });
+
+        JButton reviewBtn = new JButton("⭐ Αξιολόγηση");
+        reviewBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        reviewBtn.addActionListener(e -> {
+            new ReviewPage(listing, Session.getCurrentUserId()).setVisible(true);
+        });
+
+        JButton reportBtn = new JButton("🚩 Καταγγελία Αγγελίας");
+        reportBtn.addActionListener(e -> {
+            new ReportUserForm(
+                    Session.getCurrentUserId(),
+                    listing.getListingId(),
+                    unihousie.entity.Report.TARGET_LISTING
+            ).setVisible(true);
+        });
+
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         bottom.add(interestBtn);
+        bottom.add(scheduleBtn);
+        bottom.add(reviewBtn);
+        bottom.add(reportBtn);
 
         add(new JScrollPane(detailsArea), BorderLayout.CENTER);
         add(bottom, BorderLayout.SOUTH);
@@ -52,7 +78,7 @@ public class PropertyDetailsPage extends JFrame {
     }
 
     public void clickExpressInterest() {
-        interestController.registerInterest("stud_1", listing.getListingId());
+        interestController.registerInterest(Session.getCurrentUserId(), listing.getListingId());
         showLandlordContactDetails(new ContactInfo(
                 listing.getLandlordId(),
                 "Ιδιοκτήτης",

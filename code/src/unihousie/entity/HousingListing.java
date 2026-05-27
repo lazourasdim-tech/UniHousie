@@ -88,6 +88,20 @@ public class HousingListing {
         return results;
     }
 
+    public void recalculateAverageRating() {
+        double sum = 0;
+        int count = 0;
+        for (Review r : DataStore.reviews) {
+            if (r.getListingId().equals(this.listingId)) {
+                sum += r.getStars();
+                count++;
+            }
+        }
+        this.averageRating = (count == 0) ? 0.0 : sum / count;
+        System.out.println("[HousingListing] " + listingId + " new average rating: " +
+                String.format("%.2f", averageRating) + " (" + count + " reviews)");
+    }
+
     public String getListingId() { return listingId; }
     public String getLandlordId() { return landlordId; }
     public String getTitle() { return title; }
@@ -100,4 +114,5 @@ public class HousingListing {
     public List<String> getPhotos() { return photos; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public double getAverageRating() { return averageRating; }
 }

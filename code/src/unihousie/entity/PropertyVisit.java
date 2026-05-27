@@ -1,5 +1,6 @@
 package unihousie.entity;
 
+import unihousie.mock.DataStore;
 import java.util.Date;
 
 public class PropertyVisit {
@@ -23,6 +24,26 @@ public class PropertyVisit {
         this.scheduledDate = scheduledDate;
         this.scheduledTime = scheduledTime;
         this.status = status;
+    }
+
+    public static PropertyVisit createNew(String listingId, String studentId,
+                                          Date scheduledDate, String scheduledTime) {
+        String visitId = DataStore.nextId("visit_", DataStore.visits.size());
+        PropertyVisit v = new PropertyVisit(visitId, listingId, studentId,
+                scheduledDate, scheduledTime, PENDING_CONFIRMATION);
+        DataStore.save(v);
+        return v;
+    }
+
+    public static boolean hasCompletedVisit(String studentId, String listingId) {
+        for (PropertyVisit v : DataStore.visits) {
+            if (v.studentId.equals(studentId) &&
+                    v.listingId.equals(listingId) &&
+                    COMPLETED.equals(v.status)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getVisitId() { return visitId; }

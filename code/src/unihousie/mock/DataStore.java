@@ -4,6 +4,8 @@ import unihousie.entity.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,6 +93,26 @@ public class DataStore {
         listings.add(l1); listings.add(l2); listings.add(l3); listings.add(l4);
         listings.add(l5); listings.add(l6); listings.add(l7); listings.add(l8);
         listings.add(l9); listings.add(l10); listings.add(l11); listings.add(l12);
+
+        seedCompletedVisits();
+    }
+
+    private static void seedCompletedVisits() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -10);
+        Date d1 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, -5);
+        Date d2 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, -3);
+        Date d3 = cal.getTime();
+
+        PropertyVisit v1 = new PropertyVisit("visit_seed_1", "list_1", "stud_1", d1, "10:00", PropertyVisit.COMPLETED);
+        PropertyVisit v2 = new PropertyVisit("visit_seed_2", "list_3", "stud_1", d2, "14:30", PropertyVisit.COMPLETED);
+        PropertyVisit v3 = new PropertyVisit("visit_seed_3", "list_7", "stud_3", d3, "18:00", PropertyVisit.COMPLETED);
+
+        visits.add(v1);
+        visits.add(v2);
+        visits.add(v3);
     }
 
     public static Student findStudent(String id) {
@@ -131,6 +153,16 @@ public class DataStore {
         return null;
     }
 
+    public static Report findReport(String id) {
+        for (Report r : reports) if (r.getReportId().equals(id)) return r;
+        return null;
+    }
+
+    public static Review findReview(String id) {
+        for (Review r : reviews) if (r.getReviewId().equals(id)) return r;
+        return null;
+    }
+
     public static String nextId(String prefix, int currentSize) {
         return prefix + (currentSize + 1) + "_" + System.currentTimeMillis();
     }
@@ -150,6 +182,18 @@ public class DataStore {
             }
             messages.removeIf(x -> x.getId().equals(msg.getId()));
             messages.add(msg);
+        } else if (obj instanceof Report) {
+            Report r = (Report) obj;
+            reports.removeIf(x -> x.getReportId().equals(r.getReportId()));
+            reports.add(r);
+        } else if (obj instanceof PropertyVisit) {
+            PropertyVisit v = (PropertyVisit) obj;
+            visits.removeIf(x -> x.getVisitId().equals(v.getVisitId()));
+            visits.add(v);
+        } else if (obj instanceof Review) {
+            Review rv = (Review) obj;
+            reviews.removeIf(x -> x.getReviewId().equals(rv.getReviewId()));
+            reviews.add(rv);
         }
     }
 

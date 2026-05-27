@@ -1,5 +1,6 @@
 package unihousie.entity;
 
+import unihousie.mock.DataStore;
 import java.util.Date;
 
 public class Review {
@@ -17,6 +18,22 @@ public class Review {
         this.stars = stars;
         this.text = text;
         this.timestamp = new Date();
+    }
+
+    public static Review createNew(String studentId, String listingId, int stars, String text) {
+        String reviewId = DataStore.nextId("rev_", DataStore.reviews.size());
+        Review r = new Review(reviewId, studentId, listingId, stars, text);
+        DataStore.reviews.add(r);
+        return r;
+    }
+
+    public static boolean existsForProperty(String studentId, String listingId) {
+        for (Review r : DataStore.reviews) {
+            if (r.studentId.equals(studentId) && r.listingId.equals(listingId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getReviewId() { return reviewId; }

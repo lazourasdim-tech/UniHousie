@@ -71,6 +71,7 @@ public class MainWindow extends JFrame {
                 warn("Επίλεξε φοιτητή από τη λίστα.");
                 return;
             }
+            Session.setCurrentUser(s.getUserId());
             RoommateCard card = new RoommateCard(s.getUserId());
             open(card);
         }));
@@ -83,8 +84,14 @@ public class MainWindow extends JFrame {
             Session.setCurrentUser(s.getUserId());
             new ChatWindow().setVisible(true);
         }));
-        actions.add(actionButton("UC07 — Search property",       e -> open(new SearchPropertyPage())));
+        actions.add(actionButton("UC07 — Search property", e -> {
+            Student s = list.getSelectedValue();
+            if (s != null) Session.setCurrentUser(s.getUserId());
+            open(new SearchPropertyPage());
+        }));
         actions.add(actionButton("UC08 — Express interest", e -> {
+            Student s = list.getSelectedValue();
+            if (s != null) Session.setCurrentUser(s.getUserId());
             if (!DataStore.listings.isEmpty()) {
                 HousingListing demoListing = DataStore.listings.get(0);
                 new PropertyDetailsPage(demoListing).setVisible(true);
@@ -92,9 +99,6 @@ public class MainWindow extends JFrame {
                 warn("Δεν υπάρχουν διαθέσιμα ακίνητα για demo.");
             }
         }));
-        actions.add(actionButton("UC10 — Schedule visit",        e -> open(new ScheduleVisitPage())));
-        actions.add(actionButton("UC11 — Submit review",         e -> open(new ReviewPage())));
-        actions.add(actionButton("UC09 — Report a user",         e -> open(new ReportUserForm())));
 
         return splitPane(list, actions);
     }
