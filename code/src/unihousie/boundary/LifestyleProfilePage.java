@@ -13,8 +13,12 @@ public class LifestyleProfilePage extends JFrame {
     private final Student student;
     private final ProfileController controller;
 
-    private JTextField habitsField;
-    private JTextField scheduleField;
+    // UC02: σταθερές (fixed) τιμές ώστε ο jaccard να συγκρίνει όμοια tokens
+    private static final String[] HABIT_OPTIONS    = { "non-smoker", "smoker", "pets-ok", "no-pets", "quiet", "social" };
+    private static final String[] SCHEDULE_OPTIONS = { "morning-person", "night-owl", "flexible" };
+
+    private JCheckBox[] habitChecks;
+    private JCheckBox[] scheduleChecks;
     private JTextField budgetField;
     private JTextArea  notesArea;
     private JLabel     statusLabel;
@@ -58,26 +62,28 @@ public class LifestyleProfilePage extends JFrame {
         gc.weightx = 1.0;
 
         int row = 0;
-        gc.gridx = 0; gc.gridy = row; gc.weightx = 0; form.add(new JLabel("Συνήθειες (comma-separated):"), gc);
-        gc.gridx = 1; gc.weightx = 1.0;
-        habitsField = new JTextField();
-        form.add(habitsField, gc);
-        row++;
-        gc.gridx = 1; gc.gridy = row;
-        JLabel habitsHint = new JLabel("π.χ. non-smoker, pets ok, quiet");
-        habitsHint.setForeground(Color.GRAY);
-        form.add(habitsHint, gc);
+        gc.gridx = 0; gc.gridy = row; gc.weightx = 0; gc.anchor = GridBagConstraints.NORTHWEST;
+        form.add(new JLabel("Συνήθειες:"), gc);
+        gc.gridx = 1; gc.weightx = 1.0; gc.anchor = GridBagConstraints.WEST;
+        JPanel habitsPanel = new JPanel(new GridLayout(0, 3, 8, 2));
+        habitChecks = new JCheckBox[HABIT_OPTIONS.length];
+        for (int i = 0; i < HABIT_OPTIONS.length; i++) {
+            habitChecks[i] = new JCheckBox(HABIT_OPTIONS[i]);
+            habitsPanel.add(habitChecks[i]);
+        }
+        form.add(habitsPanel, gc);
 
         row++;
-        gc.gridx = 0; gc.gridy = row; gc.weightx = 0; form.add(new JLabel("Πρόγραμμα:"), gc);
+        gc.gridx = 0; gc.gridy = row; gc.weightx = 0;
+        form.add(new JLabel("Πρόγραμμα:"), gc);
         gc.gridx = 1; gc.weightx = 1.0;
-        scheduleField = new JTextField();
-        form.add(scheduleField, gc);
-        row++;
-        gc.gridx = 1; gc.gridy = row;
-        JLabel scheduleHint = new JLabel("π.χ. morning person / night owl / flexible");
-        scheduleHint.setForeground(Color.GRAY);
-        form.add(scheduleHint, gc);
+        JPanel schedulePanel = new JPanel(new GridLayout(0, 3, 8, 2));
+        scheduleChecks = new JCheckBox[SCHEDULE_OPTIONS.length];
+        for (int i = 0; i < SCHEDULE_OPTIONS.length; i++) {
+            scheduleChecks[i] = new JCheckBox(SCHEDULE_OPTIONS[i]);
+            schedulePanel.add(scheduleChecks[i]);
+        }
+        form.add(schedulePanel, gc);
 
         row++;
         gc.gridx = 0; gc.gridy = row; gc.weightx = 0; form.add(new JLabel("Budget (€):"), gc);
@@ -110,8 +116,8 @@ public class LifestyleProfilePage extends JFrame {
 
     private void onSaveClicked() {
 
-        String habits   = habitsField.getText().trim();
-        String schedule = scheduleField.getText().trim();
+        String habits   = joinSelected(habitChecks);
+        String schedule = joinSelected(scheduleChecks);
         String notes    = notesArea.getText().trim();
         double budget;
         try {
@@ -124,7 +130,7 @@ public class LifestyleProfilePage extends JFrame {
         }
         if (habits.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Συμπλήρωσε τουλάχιστον μία συνήθεια (comma-separated).",
+                    "Επίλεξε τουλάχιστον μία συνήθεια.",
                     "UC02 — Validation", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -134,6 +140,18 @@ public class LifestyleProfilePage extends JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage(),
                     "UC02 — Validation", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    /** Ενώνει τις επιλεγμένες σταθερές τιμές σε comma-joined String (συμβατό με LifestyleProfile.habits : String). */
+    private static String joinSelected(JCheckBox[] boxes) {
+        StringBuilder sb = new StringBuilder();
+        for (JCheckBox b : boxes) {
+            if (b.isSelected()) {
+                if (sb.length() > 0) sb.append(",");
+                sb.append(b.getText());
+            }
+        }
+        return sb.toString();
     }
 
     public void display() {
@@ -156,11 +174,22 @@ public class LifestyleProfilePage extends JFrame {
             statusLabel.setText("Κατάσταση Προφίλ: ΝΕΟ");
             return;
         }
-        habitsField.setText(profileData.getHabits() == null ? "" : profileData.getHabits());
-        scheduleField.setText(profileData.getSchedule() == null ? "" : profileData.getSchedule());
+        applySelection(habitChecks, profileData.getHabits());
+        applySelection(scheduleChecks, profileData.getSchedule());
         budgetField.setText(profileData.getBudget() > 0 ? String.valueOf(profileData.getBudget()) : "");
         notesArea.setText(profileData.getNotes() == null ? "" : profileData.getNotes());
         statusLabel.setText("Κατάσταση Προφίλ: " + (profileData.isCompleted() ? "ΟΛΟΚΛΗΡΩΜΕΝΟ" : "ΝΕΟ"));
+    }
+
+    /** Τσεκάρει τα κουτιά που αντιστοιχούν στις αποθηκευμένες (comma-joined) τιμές. */
+    private static void applySelection(JCheckBox[] boxes, String stored) {
+        java.util.Set<String> selected = new java.util.HashSet<>();
+        if (stored != null) {
+            for (String t : stored.split(",")) selected.add(t.trim().toLowerCase());
+        }
+        for (JCheckBox b : boxes) {
+            b.setSelected(selected.contains(b.getText().toLowerCase()));
+        }
     }
 
     public void showSuccessToast() {

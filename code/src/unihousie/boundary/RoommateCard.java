@@ -66,6 +66,7 @@ public class RoommateCard extends JFrame {
         profiles.clear();
         for (Student s : DataStore.students) {
             if (s.getUserId().equals(currentUserId)) continue;
+            if (!s.isVerified()) continue;
 
             LifestyleProfile profile = s.getLifestyleProfile();
             if (profile == null || !profile.isCompleted()) continue;
@@ -111,6 +112,7 @@ public class RoommateCard extends JFrame {
         profiles.clear();
         Student s = DataStore.findStudent(targetId);
         if (s == null) return;
+        if (!s.isVerified()) return;
 
         LifestyleProfile profile = s.getLifestyleProfile();
         if (profile == null || !profile.isCompleted()) return;

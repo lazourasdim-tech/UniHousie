@@ -162,7 +162,7 @@ public class BrowseRoommatesPage extends JFrame {
         JLabel nameLbl = new JLabel("<html><b>" + escape(name) + "</b><br><span style='color:#666;font-size:11px'>" + escape(dept) + "</span></html>");
         top.add(nameLbl, BorderLayout.WEST);
 
-        int pct = 85;
+        int pct = (int) Math.round(p.getCompatibilityScore() * 100);
         JLabel scoreLbl = new JLabel(pct + "%", SwingConstants.RIGHT);
         scoreLbl.setFont(scoreLbl.getFont().deriveFont(Font.BOLD, 22f));
         scoreLbl.setForeground(scoreColor(pct));

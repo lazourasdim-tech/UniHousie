@@ -44,19 +44,19 @@ public class DataStore {
         students.add(s1); students.add(s2); students.add(s3); students.add(s4); students.add(s5);
         students.add(s6); students.add(s7); students.add(s8); students.add(s9); students.add(s10);
 
-        LifestyleProfile p1 = new LifestyleProfile("prof_1", "non-smoker, no pets, quiet", "morning person", 300.0, "Ήσυχος, οργανωμένος, μου αρέσει η μαγειρική.");
+        LifestyleProfile p1 = new LifestyleProfile("prof_1", "non-smoker,no-pets,quiet", "morning-person", 300.0, "Ήσυχος, οργανωμένος, μου αρέσει η μαγειρική.");
         p1.setCompleted(true); s1.setLifestyleProfile(p1);
 
-        LifestyleProfile p3 = new LifestyleProfile("prof_3", "non-smoker, pets ok, social", "flexible", 350.0, "Έχω σκύλο, αγαπώ τη γυμναστική.");
+        LifestyleProfile p3 = new LifestyleProfile("prof_3", "non-smoker,pets-ok,social", "flexible", 350.0, "Έχω σκύλο, αγαπώ τη γυμναστική.");
         p3.setCompleted(true); s3.setLifestyleProfile(p3);
 
-        LifestyleProfile p5 = new LifestyleProfile("prof_5", "smoker, no pets, very social", "night owl", 280.0, "Νυχτοπούλι, βγαίνω σχεδόν κάθε Σάββατο.");
+        LifestyleProfile p5 = new LifestyleProfile("prof_5", "smoker,no-pets,social", "night-owl", 280.0, "Νυχτοπούλι, βγαίνω σχεδόν κάθε Σάββατο.");
         p5.setCompleted(true); s5.setLifestyleProfile(p5);
 
-        LifestyleProfile p7 = new LifestyleProfile("prof_7", "non-smoker, no pets, quiet", "morning person", 320.0, "Πρωινός τύπος, συγκεντρωμένος στο διάβασμα.");
+        LifestyleProfile p7 = new LifestyleProfile("prof_7", "non-smoker,no-pets,quiet", "morning-person", 320.0, "Πρωινός τύπος, συγκεντρωμένος στο διάβασμα.");
         p7.setCompleted(true); s7.setLifestyleProfile(p7);
 
-        LifestyleProfile p9 = new LifestyleProfile("prof_9", "non-smoker, pets ok, balanced", "flexible", 340.0, "Έχω γάτα, μου αρέσουν τα board games.");
+        LifestyleProfile p9 = new LifestyleProfile("prof_9", "non-smoker,pets-ok,quiet", "flexible", 340.0, "Έχω γάτα, μου αρέσουν τα board games.");
         p9.setCompleted(true); s9.setLifestyleProfile(p9);
 
         for (int i = 1; i <= 12; i++) {

@@ -14,7 +14,6 @@ public class NewListingPage extends JFrame {
     private JTextField addressField;
     private JTextField priceField;
     private JTextArea descriptionArea;
-    private JTextField amenitiesField;
     private JTextField photosField;
 
     public NewListingPage() {
@@ -61,13 +60,6 @@ public class NewListingPage extends JFrame {
         descriptionArea.setLineWrap(true);
         formPanel.add(new JScrollPane(descriptionArea), gc);
 
-        gc.gridx = 0; gc.gridy = row++; gc.weighty = 0;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        formPanel.add(new JLabel("Παροχές (διαχωρισμένες με κόμμα):"), gc);
-        gc.gridx = 1;
-        amenitiesField = new JTextField(30);
-        formPanel.add(amenitiesField, gc);
-
         JButton submitBtn = new JButton("Υποβολή Αγγελίας");
         submitBtn.setFont(new Font("Arial", Font.BOLD, 16));
         submitBtn.addActionListener(e -> submitListing());
@@ -85,7 +77,7 @@ public class NewListingPage extends JFrame {
             String address = addressField.getText().trim();
             double price = Double.parseDouble(priceField.getText().trim());
             String description = descriptionArea.getText().trim();
-            List<String> amenities = Arrays.asList(amenitiesField.getText().split(","));
+            List<String> amenities = java.util.Collections.emptyList();
 
             if (title.isEmpty() || address.isEmpty() || description.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία.",
@@ -115,7 +107,6 @@ public class NewListingPage extends JFrame {
         addressField.setText("");
         priceField.setText("");
         descriptionArea.setText("");
-        amenitiesField.setText("");
     }
 
     public void display() {

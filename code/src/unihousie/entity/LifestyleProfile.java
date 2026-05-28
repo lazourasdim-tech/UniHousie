@@ -91,6 +91,7 @@ public class LifestyleProfile {
 
         List<LifestyleProfile> result = new ArrayList<>();
         for (Student s : DataStore.students) {
+            if (!s.isVerified()) continue;
             LifestyleProfile p = s.getLifestyleProfile();
             if (p == null || !p.isCompleted()) continue;
             if (ownProfile != null && p.getProfileId().equals(ownProfile.getProfileId())) continue;
