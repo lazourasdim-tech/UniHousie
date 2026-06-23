@@ -25,7 +25,7 @@ The implementation follows a Boundary–Control–Entity (BCE) structure, which 
 - **Control** — the per-use-case logic that coordinates each flow (13 classes)
 - **Entity** — the domain objects that hold state: `Student`, `Landlord`, `Admin`, `HousingListing`, `MutualMatch`, `InterestExpression`, `PropertyVisit`, `Review`, `Report`, `Message`, `LifestyleProfile`, `VerificationAttempt`, and more (15 classes)
 
-##Mock Services & Data
+## Mock Services & Data
 
 Several use cases depend on real external systems we had no access to as students: gov.gr for protocol-number verification, an SMS gateway for OTP delivery, and the university's own mail server for academic-email confirmation. Since none of those were reachable from a course project, each one is backed by a mock class that simulates the response a real integration would give, so the use case can still be exercised end-to-end.
 
