@@ -49,7 +49,7 @@ I was the project coordinator (Member 1 / Editor). What I actually did:
    javac -d out $(find code -name "*.java")
    ```
 
-3. Run it (replace `<MainClass>` with the actual entry-point class — i.e. the class containing `main()` / the Swing launcher):
+3. Run it (replace `<MainClass>` with the actual entry-point class) :
    ```bash
    java -cp out <MainClass>
    ```
