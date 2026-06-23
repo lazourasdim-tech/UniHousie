@@ -9,7 +9,7 @@ The project's concept was to analyze, design, implement and develop a software s
 
 The root cause is this. Student housing in Greece is expensive, and on top of that a lot of students end up living alone and isolated. There's also a communication problem underneath both of these. most students are hesitant to approach each other in person and default to social media and platforms to interact instead, which makes finding a roommate the normal, organic way even harder. These issues usually get treated as separate problems, but they share the same answer, cohabitation. Living with the right roommate makes rent affordable and fixes the isolation at the same time. The issue is that cohabitation isn't really part of the culture here, and there's no good, trustworthy way to find someone you'd actually want to live with. That gap is what UniHousie exists to fill.
 
-So the app connects verified students with compatible roommates, and around that adds the things you need to make it real. browsing and searching listings, scheduling visits, and leaving reviews, all in one place.
+So the app connects verified students (via gov.gr for protocol-number verification, an SMS gateway for OTP delivery and academic-email) with compatible roommates (Matching Algorithm), and around that adds the things you need to make it real. browsing and searching listings (House listings from verified Landlords), scheduling visits, and leaving reviews, all in one place.
 
 This branch is where that idea was turned into a buildable specification. The focus was never on making the app look fancy, it was on getting the functionality, the use cases, and the business logic *right* before a single line of application code was written.
 
